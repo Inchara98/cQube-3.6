@@ -42,5 +42,8 @@ class Locator_Path():
 
     Compositereport = "cr"
     d_names = "//th[contains(text(),'district')]"
-    x = "x_axis"
-    y = "y_axis"
+    x = "xAxis"
+    y = "yAxis"
+
+    UdiseReport = "udise"
+    schoolcount = "schools"

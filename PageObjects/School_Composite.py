@@ -368,8 +368,8 @@ class CompositeReport:
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.CR.page_loading(self.driver)
         try:
-            x_axis = Select(self.driver.find_element_by_id(self.data.x))
-            y_axis = Select(self.driver.find_element_by_id(self.data.y))
+            x_axis = Select(self.driver.find_element_by_name(self.data.x))
+            y_axis = Select(self.driver.find_element_by_name(self.data.y))
             self.CR.page_loading(self.driver)
             for x in range(1, len(x_axis.options)):
                 x_axis.select_by_index(x)
@@ -389,14 +389,16 @@ class CompositeReport:
         self.CR.page_loading(self.driver)
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.CR.page_loading(self.driver)
-        try:
-            y_axis = Select(self.driver.find_element_by_id(self.data.y))
+        time.sleep(3)
+        y_axis = Select(self.driver.find_element_by_name(self.data.y))
+        self.CR.page_loading(self.driver)
+        for y in range(1, len(y_axis.options)):
+            y_axis.select_by_index(y)
+            print(y_axis.options[y].text)
+            time.sleep(2)
             self.CR.page_loading(self.driver)
-            for y in range(1, len(y_axis.options)):
-                y_axis.select_by_index(y)
-                self.CR.page_loading(self.driver)
-        except exceptions.NoSuchElementException:
-            print("Both x and y axis are selectable ")
+        # except exceptions.NoSuchElementException:
+        #     print("Both x and y axis are selectable ")
 
 
     def test_district(self, setup):
@@ -491,8 +493,7 @@ class CompositeReport:
         self.CR.page_loading(self.driver)
         self.fname =file_extention()
         self.driver.implicitly_wait(60)
-        management = self.driver.find_element_by_id('name').text
-        management = management[16:].lower().strip()
+        management_name = self.CR.get_management_selected_option()
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.CR.page_loading(self.driver)
         select_district = Select(self.driver.find_element_by_name('myDistrict'))
@@ -518,7 +519,7 @@ class CompositeReport:
                     else:
                         self.driver.find_element_by_id(self.data.Downloads).click()
                         time.sleep(3)
-                        self.filename = p.get_download_dir() + "/" + self.fname.sc_clusterwise()+management+'_schools_of_cluster_'+(sval+'_').strip()+self.CR.get_current_date()+'.csv'
+                        self.filename = p.get_download_dir() + "/" + self.fname.sc_clusterwise()+management_name+'_schools_of_cluster_'+(sval+'_').strip()+self.CR.get_current_date()+'.csv'
                         print(self.filename)
                         if not os.path.isfile(self.filename):
                             print(select_cluster.options[z].text,"csv file is not downloaded")
@@ -530,3 +531,4 @@ class CompositeReport:
                                     print(select_district.options[y].text,"Does not have Table records")
                             os.remove(self.filename)
         return count
+
