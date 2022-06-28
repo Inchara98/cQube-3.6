@@ -8,6 +8,22 @@ class Locator_Path():
     BackButton = "backBtn"
     logoutbutton = "logoutBtn"
 
+    # menu_opts
+    menu_icon = "menuIcon"
+    cQube_logo = "cubeLogo"
+    Dashboard = "menu"
+    sch_infra = "SchInfra"
+    std_performance = "stdPerformance"
+    attendance = "attendance"
+    tpd_opts = "tpd"
+    other_diksha = "common"
+    diksha_ETB = "etb"
+    crc_visit = "crc"
+    composite_metrics = "composite"
+    progress_card = "progressCard"
+    Exception_Reports = "exceptList"
+    Telemetry = "telemetry"
+
     InfraMap = "imr"
     Hyperlink = "dist"
     Block_button = "blockbtn"
@@ -25,5 +41,6 @@ class Locator_Path():
     sc_no_of_schools = "footer"
 
     Compositereport = "cr"
-
-
+    d_names = "//th[contains(text(),'district')]"
+    x = "x_axis"
+    y = "y_axis"
