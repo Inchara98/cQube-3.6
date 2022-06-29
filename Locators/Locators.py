@@ -47,3 +47,10 @@ class Locator_Path():
 
     UdiseReport = "udise"
     schoolcount = "schools"
+
+    SAT = "sat"
+    sr_dist_hyper = "//*[@id='block']/span[1]"
+    sr_school_hyper = "//*[@id='school']/span[5]"
+    sr_cluster_hyper = "//*[@id='cluster']/span[3]"
+    Grade = "grades"
+    Subject = "subjects"

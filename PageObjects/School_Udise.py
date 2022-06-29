@@ -63,6 +63,36 @@ class UdiseReport:
         time.sleep(3)
         self.driver.find_element_by_id(self.data.UdiseReport).click()
 
+    def Choosedist(self):
+        self.data = Locator_Path
+        Dist = Select(self.driver.find_element_by_id(self.data.Choose_Dist))
+        return Dist
+
+    def Chooseblock(self):
+        self.data = Locator_Path
+        Block = Select(self.driver.find_element_by_id(self.data.Choose_Block))
+        return Block
+
+    def Choosecluster(self):
+        self.data = Locator_Path
+        Cluster = Select(self.driver.find_element_by_id(self.data.Choose_Cluster))
+        return Cluster
+
+    def Blockbutton(self):
+        self.data = Locator_Path()
+        Block = self.driver.find_element_by_id(self.data.Block_button)
+        return Block
+
+    def Clusterbutton(self):
+        self.data = Locator_Path
+        Cluster = self.driver.find_element_by_id(self.data.Cluster_button)
+        return Cluster
+
+    def Schoolbutton(self):
+        self.data = Locator_Path
+        School = self.driver.find_element_by_id(self.data.School_button)
+        return School
+
     def test_mouse_over(self):
         self.driver.implicitly_wait(20)
         lists = self.driver.find_elements_by_class_name(self.data.markers)
@@ -90,13 +120,13 @@ class UdiseReport:
         self.UR.page_loading(self.driver)
         count = 0
         self.driver.implicitly_wait(10)
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.UR.page_loading(self.driver)
         self.driver.find_element_by_id(self.data.Block_button).click()
         time.sleep(5)
         markers = self.driver.find_elements_by_class_name(self.data.markers)
         count1 = len(markers)-1
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         time.sleep(3)
         marker = self.driver.find_elements_by_class_name(self.data.markers)
         count2 = len(marker)-1
@@ -120,7 +150,7 @@ class UdiseReport:
         self.fname =file_extention()
         management_name = self.UR.get_management_selected_option()
         count = 0
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.UR.page_loading(self.driver)
         time.sleep(3)
         self.driver.find_element_by_id(self.data.Downloads).click()
@@ -147,7 +177,7 @@ class UdiseReport:
         self.UR.login(self.username, self.password)
         self.UR.page_loading(self.driver)
         self.driver.implicitly_wait(100)
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.UR.page_loading(self.driver)
         select_district = Select(self.driver.find_element_by_id(self.data.Choose_Dist))
         select_block = Select(self.driver.find_element_by_id(self.data.Choose_Block))
@@ -196,7 +226,7 @@ class UdiseReport:
         self.UR = UdiseReport(self.driver)
         self.UR.login(self.username, self.password)
         self.UR.page_loading(self.driver)
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.UR.page_loading(self.driver)
         try:
             school = self.driver.find_element_by_id(self.data.sc_no_of_schools).text
@@ -236,7 +266,7 @@ class UdiseReport:
         self.UR.page_loading(self.driver)
         cal = pwd()
         self.fname = file_extention()
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.UR.page_loading(self.driver)
         management_name = self.UR.get_management_selected_option()
         self.driver.find_element_by_id(self.data.Block_button).click()
@@ -262,7 +292,7 @@ class UdiseReport:
         self.UR.page_loading(self.driver)
         cal = pwd()
         self.fname = file_extention()
-        self.driver.find_element_by_xpath(self.self.data.hyper_link).click()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.UR.page_loading(self.driver)
         management_name = self.UR.get_management_selected_option()
         self.driver.find_element_by_id(self.data.Cluster_button).click()
@@ -1017,130 +1047,139 @@ class UdiseReport:
         self.UR.page_loading(self.driver)
         return count
 
-    def test_district(self):
-        self.p = GetData()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.UR.page_loading(self.driver)
-        self.driver.find_element_by_id('block').click()
-        self.UR.page_loading(self.driver)
-        self.driver.find_element_by_id(Data.homeicon).click()
-        print("home icon is working ")
-        self.UR.page_loading(self.driver)
 
 
-    def test_schools(self):
-        p = pwd()
-        self.cal = GetData()
-        self.driver.implicitly_wait(100)
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.UR.page_loading(self.driver)
-        select_district = Select(self.driver.find_element_by_id('choose_dist'))
-        select_block = Select(self.driver.find_element_by_id('choose_block'))
-        count = 0
-        for x in range(2, len(select_district.options)):
-            select_district.select_by_index(x)
-            # print(select_district.options[x].text)
-            self.UR.page_loading(self.driver)
-            for y in range(1,len(select_block.options)):
-                select_block.select_by_index(y)
-                self.UR.page_loading(self.driver)
-                nodata = self.driver.find_element_by_id("errMsg").text
-                if nodata == "No data found":
-                    print(select_district.options[x].text, "no data found!")
-                    count = count + 1
-                else:
-                    markers = self.driver.find_elements_by_class_name(self.data.markers)
-                    if len(markers)-1 != 0:
-                        self.driver.find_element_by_id(self.data.Downloads).click()
-                        time.sleep(4)
-                        self.filename = p.get_download_dir() + "/Cluster_per_block_report.csv"
-                        if not os.path.isfile(self.filename):
-                            print(select_block.options[y].text,"csv is not dowloaded")
-                            count = count + 1
-                        # else:
-                        #     with open(self.filename) as fin:
-                        #         csv_reader = csv.reader(fin, delimiter=',')
-                        #         header = list(csv_reader)
-                        #         data = len(header)
-                        #         # total = 0
-                        #         # schools = 0
-                        #         # for row in csv.reader(fin):
-                        #         #     schools += int(row[2])
-                        #         school = self.driver.find_element_by_id("schools").text
-                        #         sc= re.sub('\D', "", school)
-                        #         if int(sc) != header:
-                        #             print(select_block.options[y].text,"schools:",header ,int(sc) ,"mismatch found" )
-                        #         time.sleep(2)
-                            os.remove(self.filename)
-            return count
 
-    def test_each_districtwise(self):
-        self.p = GetData()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.UR.page_loading(self.driver)
-        managment_name = self.driver.find_element_by_id('name').text
-        name = managment_name[16:].strip().lower()
-        time.sleep(2)
-        Districts = Select(self.driver.find_element_by_id('choose_dist'))
-        self.UR.page_loading(self.driver)
-        count = 0
-        for i in range(1,len(Districts.options)-10):
-            Districts.select_by_index(i)
-            self.UR.page_loading(self.driver)
-            value = self.driver.find_element_by_id('choose_dist').get_attribute('value')
-            value = value.split(":")
-            dist_name = Districts.options[i].text
-            markers = self.driver.find_elements_by_class_name(self.data.markers)
-            marker_value = len(markers)-1
-            self.UR.page_loading(self.driver)
-            if marker_value == 0 or 'no data found' in self.driver.page_source:
-                print(Districts.options[i].text , " does not have markers on map")
-                count = count + 1
-            else:
-                cal = pwd()
-                self.driver.find_element_by_id(self.data.Downloads).click()
-                time.sleep(2)
-                self.filename = cal.get_download_dir() + '/' +"UDISE_report_"+name +"_Infrastructure_Score_blocks_of_district_"+value[1].strip()+'_'+self.UR.get_current_date()+'.csv'
-                print(self.filename)
-                self.UR.page_loading(self.driver)
-                if not os.path.isfile(self.filename):
-                    print(dist_name," csv is not downloaded")
-                    count = count + 1
-                # else:
-                #     df = pd.read_csv(self.filename)
-                #     schools = df['']
-                #     school = self.driver.find_element_by_id("schools").text
-                #     sc = re.sub('\D', "", school)
-                #     if int(sc) != int(schools):
-                #         print("school count mismatched")
-                #         count = count + 1
-                os.remove(self.filename)
 
-        return count
 
-    def test_map(self):
-        self.p = GetData()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.UR.page_loading(self.driver)
-        dots = self.driver.find_elements_by_class_name(self.data.markers)
-        self.UR.page_loading(self.driver)
-        count = len(dots)-1
-        return count
+    # def test_schools(self, setup):
+    #     p = pwd()
+    #     self.driver = setup
+    #     self.data = Locator_Path()
+    #     self.driver.get(self.baseUrl)
+    #     self.UR = UdiseReport(self.driver)
+    #     self.UR.login(self.username, self.password)
+    #     self.UR.page_loading(self.driver)
+    #     self.driver.implicitly_wait(100)
+    #     self.file = file_extention()
+    #     management = self.UR.get_management_selected_option()
+    #     self.driver.find_element_by_xpath(self.data.hyper_link).click()
+    #     self.UR.page_loading(self.driver)
+    #     select_district = Select(self.driver.find_element_by_id('choose_dist'))
+    #     select_block = Select(self.driver.find_element_by_id('choose_block'))
+    #     value = self.driver.find_element_by_id(self.data.Choose_Block).get_attribute('value')
+    #     value = value.split(":")
+    #     count = 0
+    #     for x in range(2, len(select_district.options)):
+    #         select_district.select_by_index(x)
+    #         # print(select_district.options[x].text)
+    #         self.UR.page_loading(self.driver)
+    #         for y in range(1,len(select_block.options)):
+    #             select_block.select_by_index(y)
+    #             self.UR.page_loading(self.driver)
+    #             nodata = self.driver.find_element_by_id("errMsg").text
+    #             if nodata == "No data found":
+    #                 print(select_district.options[x].text, "no data found!")
+    #                 count = count + 1
+    #             else:
+    #                 markers = self.driver.find_elements_by_class_name(self.data.markers)
+    #                 if len(markers)-1 != 0:
+    #                     self.driver.find_element_by_id(self.data.Downloads).click()
+    #                     time.sleep(4)
+    #                     self.filename = p.get_download_dir() + '/' +"UDISE_report_"+management +"_Infrastructure_Score_clusters_of_block_"+value[1].strip()+'_'+self.UR.get_current_date()+'.csv'
+    #                     if not os.path.isfile(self.filename):
+    #                         print(select_block.options[y].text,"csv is not dowloaded")
+    #                         count = count + 1
+    #                     # else:
+    #                     #     with open(self.filename) as fin:
+    #                     #         csv_reader = csv.reader(fin, delimiter=',')
+    #                     #         header = list(csv_reader)
+    #                     #         data = len(header)
+    #                     #         # total = 0
+    #                     #         # schools = 0
+    #                     #         # for row in csv.reader(fin):
+    #                     #         #     schools += int(row[2])
+    #                     #         school = self.driver.find_element_by_id("schools").text
+    #                     #         sc= re.sub('\D', "", school)
+    #                     #         if int(sc) != header:
+    #                     #             print(select_block.options[y].text,"schools:",header ,int(sc) ,"mismatch found" )
+    #                     #         time.sleep(2)
+    #                         os.remove(self.filename)
+    #         return count
 
-    def test_dashboard(self):
-        self.p = GetData()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.UR.page_loading(self.driver)
-        self.driver.find_element_by_id(Data.menu_icon).click()
-        time.sleep(2)
-        self.driver.find_element_by_id(Data.sch_infra).click()
-        self.UR.page_loading(self.driver)
-        self.driver.find_element_by_id(Data.udise_report).click()
-        self.UR.page_loading(self.driver)
-        count = 0
-        if 'udise-report' in self.driver.current_url:
-            print('UDISE map report is displayed')
-        else:
-            print('UDISE map report is not displayed')
-            count = count + 1
-        return count
+    # def test_each_districtwise(self):
+    #     self.p = GetData()
+    #     self.driver.find_element_by_xpath(self.data.hyper_link).click()
+    #     self.UR.page_loading(self.driver)
+    #     managment_name = self.driver.find_element_by_id('name').text
+    #     name = managment_name[16:].strip().lower()
+    #     time.sleep(2)
+    #     Districts = Select(self.driver.find_element_by_id('choose_dist'))
+    #     self.UR.page_loading(self.driver)
+    #     count = 0
+    #     for i in range(1,len(Districts.options)-10):
+    #         Districts.select_by_index(i)
+    #         self.UR.page_loading(self.driver)
+    #         value = self.driver.find_element_by_id('choose_dist').get_attribute('value')
+    #         value = value.split(":")
+    #         dist_name = Districts.options[i].text
+    #         markers = self.driver.find_elements_by_class_name(self.data.markers)
+    #         marker_value = len(markers)-1
+    #         self.UR.page_loading(self.driver)
+    #         if marker_value == 0 or 'no data found' in self.driver.page_source:
+    #             print(Districts.options[i].text , " does not have markers on map")
+    #             count = count + 1
+    #         else:
+    #             cal = pwd()
+    #             self.driver.find_element_by_id(self.data.Downloads).click()
+    #             time.sleep(2)
+    #             self.filename = cal.get_download_dir() + '/' +"UDISE_report_"+name +"_Infrastructure_Score_blocks_of_district_"+value[1].strip()+'_'+self.UR.get_current_date()+'.csv'
+    #             print(self.filename)
+    #             self.UR.page_loading(self.driver)
+    #             if not os.path.isfile(self.filename):
+    #                 print(dist_name," csv is not downloaded")
+    #                 count = count + 1
+    #             # else:
+    #             #     df = pd.read_csv(self.filename)
+    #             #     schools = df['']
+    #             #     school = self.driver.find_element_by_id("schools").text
+    #             #     sc = re.sub('\D', "", school)
+    #             #     if int(sc) != int(schools):
+    #             #         print("school count mismatched")
+    #             #         count = count + 1
+    #             os.remove(self.filename)
+    #
+    #     return count
+
+    # def test_map(self, setup):
+    #     self.driver = setup
+    #     self.data = Locator_Path()
+    #     self.driver.get(self.baseUrl)
+    #     self.UR = UdiseReport(self.driver)
+    #     self.UR.login(self.username, self.password)
+    #     self.UR.page_loading(self.driver)
+    #     self.driver.find_element_by_xpath(self.data.hyper_link).click()
+    #     self.UR.page_loading(self.driver)
+    #     dots = self.driver.find_elements_by_class_name(self.data.markers)
+    #     self.UR.page_loading(self.driver)
+    #     count = len(dots)-1
+    #     return count
+    #
+    # def test_dashboard(self):
+    #     self.p = GetData()
+    #     self.driver.find_element_by_xpath(self.data.hyper_link).click()
+    #     self.UR.page_loading(self.driver)
+    #     self.driver.find_element_by_id(Data.menu_icon).click()
+    #     time.sleep(2)
+    #     self.driver.find_element_by_id(Data.sch_infra).click()
+    #     self.UR.page_loading(self.driver)
+    #     self.driver.find_element_by_id(Data.udise_report).click()
+    #     self.UR.page_loading(self.driver)
+    #     count = 0
+    #     if 'udise-report' in self.driver.current_url:
+    #         print('UDISE map report is displayed')
+    #     else:
+    #         print('UDISE map report is not displayed')
+    #         count = count + 1
+    #     return count
+
