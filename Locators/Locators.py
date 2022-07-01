@@ -67,3 +67,7 @@ class Locator_Path():
     district_dropdown = "district"
     blocks_dropdown = "block"
     cluster_dropdown = "cluster"
+
+    PAT = "pat1"
+    PAT_HC = "heatChart"
+    year_select = "year"

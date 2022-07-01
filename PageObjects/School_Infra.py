@@ -805,7 +805,8 @@ class SchoolInfra:
         self.SI.page_loading(self.driver)
         return count
 
-    def block_disable(self, setup):
+
+    def legend(self, setup):
         self.driver = setup
         self.data = Locator_Path
         self.driver.get(self.baseUrl)
@@ -814,7 +815,14 @@ class SchoolInfra:
         time.sleep(8)
         self.SI.InfraMap().click()
         time.sleep(10)
-        self.SI.Choosedist().select_by_index(1)
-
-
-
+        legend = self.driver.find_element_by_xpath("//*[@id='0']")
+        legend.click()
+        if "No data found" in self.driver.page_source:
+            print(" No data found for 0-10 legend")
+        else:
+            markers = self.driver.find_elements_by_class_name(self.data.markers)
+            count = len(markers) - 1
+            print("Mousehover on each markers..")
+            self.SI.test_mouse_over()
+            self.SI.page_loading(self.driver)
+            return count
