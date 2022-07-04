@@ -17,7 +17,7 @@ from utilities.readProperties import ReadConfig
 from selenium.common import exceptions
 
 
-class PAT_Heat_Chart:
+class PAT_LO:
     baseUrl = ReadConfig.getApplicationUrl()
     username = ReadConfig.getUserID()
     password = ReadConfig.getPassword()
@@ -52,20 +52,27 @@ class PAT_Heat_Chart:
         management_name = management_name[16:].strip().lower()
         return management_name
 
-    def navigate_to_heatchart_report(self):
-        self.driver.implicitly_wait(20)
-        self.driver.find_element_by_id(self.data.menu_icon).click()
-        time.sleep(2)
-        self.driver.find_element_by_id(self.data.std_performance).click()
-        time.sleep(2)
-        self.driver.find_element_by_id(self.data.PAT_HC).click()
-        time.sleep(4)
-
     def click_on_state(self, driver):
         self.driver = driver
         self.data = Locator_Path
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         time.sleep(4)
+
+    def get_pat_month_and_year_values(self):
+        year = Select(self.driver.find_element_by_id(self.data.sar_year))
+        month = Select(self.driver.find_element_by_id(self.data.sar_month))
+        self.year = (year.first_selected_option.text).strip()
+        self.month = (month.first_selected_option.text).strip()
+        return self.year, self.month
+
+    def navigate_to_lo_table_report(self):
+        self.driver.implicitly_wait(20)
+        self.driver.find_element_by_id(self.data.menu_icon).click()
+        time.sleep(1)
+        self.driver.find_element_by_id(self.data.std_performance).click()
+        time.sleep(2)
+        self.driver.find_element_by_id(self.data.PAT_LO).click()
+        time.sleep(3)
 
     def login(self, username, password):
         self.data = Locator_Path()
@@ -78,153 +85,43 @@ class PAT_Heat_Chart:
         time.sleep(3)
         self.driver.find_element_by_id(self.data.std_performance).click()
         time.sleep(3)
-        self.driver.find_element_by_id(self.data.PAT_HC).click()
+        self.driver.find_element_by_id(self.data.PAT_LO).click()
         time.sleep(5)
-
-
-    def Blocks_select_box(self, setup):
-        self.driver = setup
-        self.p = pwd()
-        self.data = Locator_Path()
-        self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
-        self.SP.login(self.username, self.password)
-        self.SP.page_loading(self.driver)
-        count = 0
-        self.fname = file_extention()
-        management = self.driver.find_element_by_id('name').text
-        management = management[16:].lower().strip()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
-        self.year , self.month = self.SP.get_pat_month_and_year_values()
-        dists = Select(self.driver.find_element_by_id(self.data.district_dropdown))
-        Blocks = Select(self.driver.find_element_by_id(self.data.blocks_dropdown))
-        grade = Select(self.driver.find_element_by_id(self.data.grade))
-        self.SP.page_loading(self.driver)
-        for m in range(2, len(grade.options)):
-            grade.select_by_index(m)
-            gradename = grade.options[m].text
-            gradenum = re.sub('\D','',gradename).strip()
-            self.SP.page_loading(self.driver)
-            for i in range(len(dists.options)-1, len(dists.options)):
-                dists.select_by_index(i)
-                self.SP.page_loading(self.driver)
-                for j in range(1, len(Blocks.options)):
-                    Blocks.select_by_index(j)
-                    self.SP.page_loading(self.driver)
-                    # for k in range(4, len(clust.options)):
-                    #     clust.select_by_index(k)
-                    time.sleep(5)
-                    value = self.driver.find_element_by_id(self.data.blocks_dropdown).get_attribute('value')
-                    value = value.split(":")
-                    self.SP.page_loading(self.driver)
-                    print(dists.options[i].text ,Blocks.options[j].text )
-                        # if 'No data found' in self.driver.page_source:
-                    if self.driver.find_element_by_xpath('//*[@id="errMsg"]').is_displayed():
-                        print(Blocks.options[j].text , "not having data ")
-                    else:
-                        self.driver.find_element_by_id(self.data.Downloads).click()
-                        time.sleep(3)
-                        self.filename = self.p.get_download_dir() + '/' + self.fname.pchart_schools()+management+'_'+gradenum+"_clusters_of_block_"+value[1].strip()+"_"+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
-                        print(self.filename)
-                        file = os.path.isfile(self.filename)
-                        if file != True:
-                            print(Blocks.options[j].text, 'Block wise records csv file is not downloaded')
-                            count = count + 1
-                        self.SP.page_loading(self.driver)
-                        os.remove(self.filename)
-        return count
-
-
-
-    def Clusters_select_box(self, setup):
-        self.driver = setup
-        self.p = pwd()
-        self.data = Locator_Path()
-        self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
-        self.SP.login(self.username, self.password)
-        self.SP.page_loading(self.driver)
-        count = 0
-        self.fname = file_extention()
-        management = self.driver.find_element_by_id('name').text
-        management = management[16:].lower().strip()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
-        self.year , self.month = self.SP.get_pat_month_and_year_values()
-        clust = Select(self.driver.find_element_by_id(self.data.cluster_dropdown))
-        dists = Select(self.driver.find_element_by_id(self.data.district_dropdown))
-        Blocks = Select(self.driver.find_element_by_id(self.data.blocks_dropdown))
-        grade = Select(self.driver.find_element_by_id(self.data.grade))
-        self.SP.page_loading(self.driver)
-        for m in range(2, len(grade.options)):
-            grade.select_by_index(m)
-            gradename = grade.options[m].text
-            gradenum = re.sub('\D','',gradename).strip()
-            self.SP.page_loading(self.driver)
-            for i in range(len(dists.options)-1, len(dists.options)):
-                dists.select_by_index(i)
-                self.SP.page_loading(self.driver)
-                for j in range(len(Blocks.options)-1, len(Blocks.options)):
-                    Blocks.select_by_index(j)
-                    self.SP.page_loading(self.driver)
-                    for k in range(4, len(clust.options)):
-                        clust.select_by_index(k)
-                        time.sleep(5)
-                        value = self.driver.find_element_by_id(self.data.cluster_dropdown).get_attribute('value')
-                        value = value.split(":")
-                        self.SP.page_loading(self.driver)
-                        print(dists.options[i].text ,Blocks.options[j].text , clust.options[k].text )
-                        # if 'No data found' in self.driver.page_source:
-                        if  self.driver.find_element_by_xpath('//*[@id="errMsg"]').is_displayed():
-                            print(clust.options[k].text , "not having data ")
-                        else:
-                            self.driver.find_element_by_id(self.data.Downloads).click()
-                            time.sleep(3)
-                            self.filename = self.p.get_download_dir() + '/' + self.fname.pchart_schools()+management+'_'+gradenum+"_schools_of_cluster_"+value[1].strip()+"_"+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
-                            print(self.filename)
-                            file = os.path.isfile(self.filename)
-                            if file != True:
-                                print(clust.options[k].text, 'Cluster wise records csv file is not downloaded')
-                                count = count + 1
-                            self.SP.page_loading(self.driver)
-                            os.remove(self.filename)
-        return count
-
 
     def viewbys_options(self, setup):
         self.p = pwd()
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
         self.fname = file_extention()
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
         management = self.driver.find_element_by_id('name').text
         management = management[16:].lower().strip()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
+        time.sleep(5)
+        self.SP.page_loading(self.driver)
         year = Select(self.driver.find_element_by_id('year'))
         month = Select(self.driver.find_element_by_id('month'))
         self.year = (year.first_selected_option.text).strip()
         self.month = (month.first_selected_option.text).strip()
-
+        management = self.driver.find_element_by_id('name').text
+        management = management[16:].lower().strip()
         grades = Select(self.driver.find_element_by_id(self.data.grade))
         grades.select_by_index(2)
         gradename = grades.options[2].text
-        gradenum = re.sub('\D','',gradename).strip()
+        gradenum = re.sub('\D', '', gradename).strip()
         self.SP.page_loading(self.driver)
 
         view_by = Select(self.driver.find_element_by_id(self.data.view_by))
         # view_by.select_by_visible_text(' Question Id ')
         view_by.select_by_index(1)
         self.SP.page_loading(self.driver)
-        self.SP.page_loading(self.driver)
         self.driver.find_element_by_id(self.data.Downloads).click()
         time.sleep(3)
-        self.filename = self.p.get_download_dir() + "/" + self.fname.pchart_views()+management+"_"+ gradenum + '_' + self.data.question_id + self.month + '_' \
+        self.filename = self.p.get_download_dir() + "/" + self.fname.patlo_views()+management+'_' + gradenum + '_' + self.data.question_id + self.month + '_' \
                         + self.year + '_' + self.SP.get_current_date() + '.csv'
         print(self.filename)
         if os.path.isfile(self.filename) != True:
@@ -234,7 +131,7 @@ class PAT_Heat_Chart:
         view_by.select_by_index(2)
         self.driver.find_element_by_id(self.data.Downloads).click()
         time.sleep(3)
-        self.file = self.p.get_download_dir() + "/" + self.fname.pchart_views()+management+"_"+gradenum + '_' + self.data.indicator_id + self.month + '_' \
+        self.file = self.p.get_download_dir() + "/" + self.fname.patlo_views()+management+'_'+ gradenum + '_' + self.data.indicator_id + self.month + '_' \
                     + self.year + '_' + self.SP.get_current_date() + '.csv'
         print(self.file)
         if os.path.isfile(self.file) != True:
@@ -249,23 +146,18 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
         self.fname = file_extention()
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.SP.page_loading(self.driver)
-        management = self.SP.get_management_selected_option()
         year = Select(self.driver.find_element_by_id('year'))
         month = Select(self.driver.find_element_by_id('month'))
         self.year = (year.first_selected_option.text).strip()
         self.month = (month.first_selected_option.text).strip()
-        grade = Select(self.driver.find_element_by_id(self.data.grade))
-        grade.select_by_index(2)
-        gradename = grade.options[2].text
-        gradenum = re.sub('\D', '', gradename).strip()
-        self.SP.page_loading(self.driver)
+        management = self.SP.get_management_selected_option()
         view_by = Select(self.driver.find_element_by_id(self.data.view_by))
         view_by.select_by_index(1)
         self.SP.page_loading(self.driver)
@@ -277,7 +169,7 @@ class PAT_Heat_Chart:
         self.SP.page_loading(self.driver)
         self.driver.find_element_by_id(self.data.Downloads).click()
         time.sleep(3)
-        self.filename = self.p.get_download_dir() + "/" + self.fname.pchart_views()+management+'_'+ gradenum + '_' + self.data.question_id + self.month + '_' \
+        self.filename = self.p.get_download_dir() + "/" + self.fname.patlo_views()+management+ '_' +'all'+ '_' + self.data.question_id + self.month + '_' \
                     + self.year + '_' + self.SP.get_current_date()+'.csv'
         if os.path.isfile(self.filename) != True:
             print(view_by.options[1].text, 'csv file is not downloaded')
@@ -292,23 +184,15 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
         self.fname = file_extention()
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
-        year = Select(self.driver.find_element_by_id('year'))
-        month = Select(self.driver.find_element_by_id('month'))
-        self.year = (year.first_selected_option.text).strip()
-        self.month = (month.first_selected_option.text).strip()
+        time.sleep(5)
         management = self.SP.get_management_selected_option()
-        grade = Select(self.driver.find_element_by_id(self.data.grade))
-        grade.select_by_index(4)
-        gradename = grade.options[4].text
-        gradenum = re.sub('\D', '', gradename).strip()
-        self.SP.page_loading(self.driver)
+        self.year, self.month = self.SP.get_pat_month_and_year_values()
         view_by = Select(self.driver.find_element_by_id(self.data.view_by))
         view_by.select_by_index(2)
         self.SP.page_loading(self.driver)
@@ -320,8 +204,7 @@ class PAT_Heat_Chart:
         self.SP.page_loading(self.driver)
         self.driver.find_element_by_id(self.data.Downloads).click()
         time.sleep(3)
-        self.filename = self.p.get_download_dir() + "/" + self.fname.pchart_views()+management+'_'+ gradenum + '_' + 'allDistricts_' + self.month + '_' \
-                    + self.year + '_' + self.SP.get_current_date()+'.csv'
+        self.filename = self.p.get_download_dir() + "/" + self.fname.patlo_views()+management+'_overall_allDistricts_'+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
         if os.path.isfile(self.filename) != True:
             print(view_by.options[2].text, 'csv file is not downloaded')
             count = count + 1
@@ -335,34 +218,29 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
-        self.fname = file_extention()
         management = self.driver.find_element_by_id('name').text
         management = management[16:].lower().strip()
-        # self.year,self.month = cal.pat_month_and_year_values()
-        year = Select(self.driver.find_element_by_id('year'))
-        month = Select(self.driver.find_element_by_id('month'))
-        self.year = (year.first_selected_option.text).strip()
-        self.month = (month.first_selected_option.text).strip()
+        self.fname = file_extention()
         self.driver.find_element_by_id(self.data.cQube_logo).click()
         self.SP.page_loading(self.driver)
-        self.SP.navigate_to_heatchart_report()
-        month = Select(self.driver.find_element_by_id('month'))
-        month.select_by_index(1)
+        self.SP.navigate_to_lo_table_report()
         self.SP.page_loading(self.driver)
+        self.year,self.month = self.SP.get_pat_month_and_year_values()
         self.driver.find_element_by_id(self.data.Downloads).click()
         time.sleep(3)
-        self.filename = self.p.get_download_dir() + '/' + self.fname.pchart_all_districts()+management+'_overall_allDistricts_'+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
+        self.filename = self.p.get_download_dir() + '/' + self.fname.patlo_all_districts()+management+'_overall_allDistricts_'+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
         print(self.filename)
         if os.path.isfile(self.filename) != True:
-             print("Districtwise csv file is not downloaded")
+            print('Districtwise csv file is not downloaded ')
+            count = count + 1
         else:
-              print('District wise csv file is downloaded ')
-        os.remove(self.filename)
+            print('District wise csv file is downloaded ')
         self.SP.page_loading(self.driver)
+        os.remove(self.filename)
         return count
 
     def exams_dates(self, setup):
@@ -370,15 +248,12 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
         self.fname = file_extention()
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
-        grade = Select(self.driver.find_element_by_id(self.data.grade))
-        grade.select_by_index(4)
         self.SP.page_loading(self.driver)
         examdates = Select(self.driver.find_element_by_id(self.data.exam_dates))
         for i in range(1, len(examdates.options)):
@@ -398,40 +273,41 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
         self.fname = file_extention()
-        management = self.driver.find_element_by_id('name').text
-        management = management[16:].lower().strip()
         self.driver.find_element_by_id(self.data.cQube_logo).click()
         self.SP.page_loading(self.driver)
-        self.SP.navigate_to_heatchart_report()
+        self.SP.navigate_to_lo_table_report()
         self.SP.page_loading(self.driver)
-        year = Select(self.driver.find_element_by_id(self.data.sar_year))
-        month = Select(self.driver.find_element_by_id(self.data.sar_month))
-        self.year = (year.first_selected_option.text).strip()
-        self.month = (month.first_selected_option.text).strip()
+        management = self.driver.find_element_by_id('name').text
+        management = management[16:].lower().strip()
+        self.year ,self.month = self.SP.get_pat_month_and_year_values()
         grade = Select(self.driver.find_element_by_id(self.data.grade))
         grade.select_by_index(4)
-        gradename =(grade.options[4].text).strip()
-        gradenum = re.sub('\D','',gradename)
+        gradename = (grade.options[4].text).strip()
+        gradenum = re.sub('\D', '', gradename)
         self.SP.page_loading(self.driver)
         subject = Select(self.driver.find_element_by_id(self.data.subjects))
         for i in range(2, len(subject.options)):
             subject.select_by_index(i)
             self.SP.page_loading(self.driver)
-            time.sleep(6)
-            if "No data found" in  self.driver.page_source:
-                print(subject.options[i].text, 'HAVING NO DATA FOUND ')
+            if subject.options[i].text in self.driver.page_source:
+                print(subject.options[i].text, 'is displayed chart table ')
                 self.SP.page_loading(self.driver)
             else:
-                print(subject.options[i].text, 'is displayed chart table ')
+                print(subject.options[i].text, 'is not displayed ')
+                count = count + 1
+            if 'No data found' in self.driver.page_source:
+                print("No Data found on screen")
+            else:
                 self.driver.find_element_by_id(self.data.Downloads).click()
                 time.sleep(3)
-                self.filename = self.p.get_download_dir() + '/' + self.fname.pchart_subjects()+management+'_'+gradenum+'_'+(subject.options[i].text).strip()+\
-                                '_allDistricts_'+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
+                self.filename = self.p.get_download_dir() + '/' + self.fname.patlo_subjects()+management+'_'+ gradenum + '_' + (
+                    subject.options[i].text).strip() + \
+                                '_allDistricts_' + self.month + '_' + self.year + '_' + self.SP.get_current_date() + '.csv'
                 print(self.filename)
                 if os.path.isfile(self.filename) != True:
                     print(subject.options[i].text, 'csv file is not downloaded')
@@ -444,13 +320,10 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
-        grade = Select(self.driver.find_element_by_id(self.data.grade))
-        grade.select_by_index(2)
         self.SP.page_loading(self.driver)
         timeseries = Select(self.driver.find_element_by_id(self.data.exam_dates))
         timeseries.select_by_index(2)
@@ -462,7 +335,7 @@ class PAT_Heat_Chart:
         self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
@@ -470,24 +343,22 @@ class PAT_Heat_Chart:
         self.SP.page_loading(self.driver)
         self.driver.find_element_by_id(self.data.cQube_logo).click()
         self.SP.page_loading(self.driver)
-        # self.driver.find_element_by_xpath("//div[@id='heatChart']").click()
-        self.SP.navigate_to_heatchart_report()
+        self.SP.navigate_to_lo_table_report()
         self.SP.page_loading(self.driver)
-        if 'heat-chart' in self.driver.current_url:
-            print('Pat heat chart is present ')
+        if 'PAT-LO-table' in self.driver.current_url:
+            print('Pat LO Table is present ')
         else:
             print('Home button is not working ')
             count = count + 1
         self.SP.page_loading(self.driver)
         return count
 
-
     def test_year_dropdown(self, setup):
-        self.driver = setup
         self.p = pwd()
+        self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
@@ -507,73 +378,76 @@ class PAT_Heat_Chart:
         self.SP.page_loading(self.driver)
         return count
 
+
     def District_select_box(self, setup):
-        self.driver = setup
         self.p = pwd()
+        self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
-        self.fname = file_extention()
         management = self.driver.find_element_by_id('name').text
         management = management[16:].lower().strip()
-        year = Select(self.driver.find_element_by_id('year'))
-        month = Select(self.driver.find_element_by_id('month'))
-        self.year = (year.first_selected_option.text).strip()
-        self.month = (month.first_selected_option.text).strip()
+        self.fname = file_extention()
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.SP.page_loading(self.driver)
-        grades = Select(self.driver.find_element_by_id(self.data.grade))
-        grades.select_by_index(2)
-        gradename = (grades.options[2].text).strip()
-        gradenum =re.sub('\D','',gradename).strip()
+        self.year, self.month = self.SP.get_pat_month_and_year_values()
         dists = Select(self.driver.find_element_by_id(self.data.district_dropdown))
-        view_by = Select(self.driver.find_element_by_id(self.data.view_by))
-        for j in range(len(view_by.options)):
-            view_by.select_by_index(j)
+        grade = Select(self.driver.find_element_by_id(self.data.grade))
+        self.SP.page_loading(self.driver)
+        for m in range(2, len(grade.options)):
+            grade.select_by_index(m)
+            gradename = grade.options[m].text
+            gradenum = re.sub('\D', '', gradename).strip()
             self.SP.page_loading(self.driver)
-            for i in range( len(dists.options)-4, len(dists.options)):
+            for i in range(len(dists.options) - 1, len(dists.options)):
                 dists.select_by_index(i)
-                print(dists.options[i].text)
-                value = self.driver.find_element_by_id(self.data.district_dropdown).get_attribute('value')
-                value = value.split(":")
                 self.SP.page_loading(self.driver)
+                value = self.driver.find_element_by_id(self.data.district_dropdown).get_attribute('value')
+                vals = value.split(":")
+                val = vals[1].strip()
                 self.driver.find_element_by_id(self.data.Downloads).click()
                 time.sleep(3)
-                self.filename = self.p.get_download_dir() + '/' + self.fname.pchart_blocks()+management+'_'+gradenum+ \
-                "_blocks_of_district_"+value[1].strip()+'_'+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
+                self.filename = self.p.get_download_dir() + '/' + self.fname.patlo_clusters() + management + '_' + gradenum + "_blocks_of_district_" + val +'_'+ self.month + '_' + self.year + '_' +self.SP.get_current_date() + '.csv'
                 print(self.filename)
                 file = os.path.isfile(self.filename)
                 if file != True:
                     print(dists.options[i].text, 'District wise records csv file is not downloaded')
                     count = count + 1
-                self.SP.page_loading(self.driver)
-                os.remove(self.filename)
-        return count
+                else:
+                    with open(self.filename) as fin:
+                        csv_reader = csv.reader(fin, delimiter=',')
+                        header = next(csv_reader)
+                        data = list(csv_reader)
+                        row_count = len(data)
+                    os.remove(self.filename)
+                    tablecount = self.driver.find_elements_by_tag_name('tr')
+                    records = int(len(tablecount)) - 2
+                    time.sleep(2)
+                    if row_count != records:
+                        print(dists.options[i].text, dists.options[i].text,
+                              "records count mismatch in downloaded file and table records")
+                        count = count + 1
 
-    def get_pat_month_and_year_values(self):
-        year = Select(self.driver.find_element_by_id(self.data.sar_year))
-        month = Select(self.driver.find_element_by_id(self.data.sar_month))
-        self.year = (year.first_selected_option.text).strip()
-        self.month = (month.first_selected_option.text).strip()
-        return self.year, self.month
+                return count
 
-    def check_block_select_box(self, setup):
+    def Block_select_box(self, setup):
         self.p = pwd()
+        self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
-        self.fname = file_extention()
         management = self.driver.find_element_by_id('name').text
         management = management[16:].lower().strip()
+        self.fname = file_extention()
         self.driver.find_element_by_xpath(self.data.hyper_link).click()
         self.SP.page_loading(self.driver)
-        self.year , self.month = self.SP.get_pat_month_and_year_values()
+        self.year, self.month = self.SP.get_pat_month_and_year_values()
         dists = Select(self.driver.find_element_by_id(self.data.district_dropdown))
         Blocks = Select(self.driver.find_element_by_id(self.data.blocks_dropdown))
         grade = Select(self.driver.find_element_by_id(self.data.grade))
@@ -581,58 +455,117 @@ class PAT_Heat_Chart:
         for m in range(2, len(grade.options)):
             grade.select_by_index(m)
             gradename = grade.options[m].text
-            gradenum = re.sub('\D','',gradename).strip()
+            gradenum = re.sub('\D', '', gradename).strip()
             self.SP.page_loading(self.driver)
-            for i in range(len(dists.options)-1, len(dists.options)):
+            for i in range(len(dists.options) - 1, len(dists.options)):
                 dists.select_by_index(i)
                 self.SP.page_loading(self.driver)
-                for j in range(len(Blocks.options)-1, len(Blocks.options)):
+                for j in range(len(Blocks.options) - 1, len(Blocks.options)):
                     Blocks.select_by_index(j)
                     self.SP.page_loading(self.driver)
                     value = self.driver.find_element_by_id(self.data.blocks_dropdown).get_attribute('value')
-                    bvalue = value.split(":")
-                    val = bvalue[1].strip()
+                    vals = value.split(":")
+                    val = vals[1].strip()
                     self.driver.find_element_by_id(self.data.Downloads).click()
-                    time.sleep(4)
-                    self.filename = self.p.get_download_dir() + '/' + self.fname.pchart_clusters() + management + '_' + gradenum + "_clusters_of_block_" + val +'_'+ self.month + '_' + self.year + '_' + \
+                    time.sleep(3)
+                    self.filename = self.p.get_download_dir() + '/' + self.fname.patlo_clusters() + management + '_' + gradenum + "_clusters_of_block_" + val +'_'+ self.month + '_' + self.year + '_' + \
                                     self.SP.get_current_date() + '.csv'
                     print(self.filename)
                     file = os.path.isfile(self.filename)
                     if file != True:
                         print(Blocks.options[j].text, 'Block wise records csv file is not downloaded')
                         count = count + 1
-                    self.SP.page_loading(self.driver)
-                    os.remove(self.filename)
-                return count
+                    else:
+                        with open(self.filename) as fin:
+                            csv_reader = csv.reader(fin, delimiter=',')
+                            header = next(csv_reader)
+                            data = list(csv_reader)
+                            row_count = len(data)
+                        os.remove(self.filename)
+                        tablecount = self.driver.find_elements_by_tag_name('tr')
+                        records = int(len(tablecount)) - 2
+                        time.sleep(2)
+                        if row_count != records:
+                            print(dists.options[i].text, Blocks.options[j].text,
+                                  "records count mismatch in downloaded file and table records")
+                            count = count + 1
 
-    def test_hyperlink(self, setup):
-        self.driver = setup
-        self.data = Locator_Path()
-        self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
-        self.SP.login(self.username, self.password)
-        self.SP.page_loading(self.driver)
-        self.driver.implicitly_wait(20)
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
-        examdates = Select(self.driver.find_element_by_id('grade'))
-        examdates.select_by_index(4)
-        self.driver.find_element_by_xpath(self.data.hyper_link).click()
-        self.SP.page_loading(self.driver)
+                    return count
 
-
-    def grades_files(self, setup):
-        self.driver = setup
+    def Clusters_select_box(self, setup):
         self.p = pwd()
+        self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0
-        self.fname = file_extention()
         management = self.driver.find_element_by_id('name').text
         management = management[16:].lower().strip()
+        self.fname = file_extention()
+        self.driver.find_element_by_xpath(self.data.hyper_link).click()
+        self.SP.page_loading(self.driver)
+        self.year, self.month = self.SP.get_pat_month_and_year_values()
+        clust = Select(self.driver.find_element_by_id(self.data.cluster_dropdown))
+        dists = Select(self.driver.find_element_by_id(self.data.district_dropdown))
+        Blocks = Select(self.driver.find_element_by_id(self.data.blocks_dropdown))
+        grade = Select(self.driver.find_element_by_id(self.data.grade))
+        self.SP.page_loading(self.driver)
+        for m in range(2, len(grade.options)):
+            grade.select_by_index(m)
+            gradename = grade.options[m].text
+            gradenum = re.sub('\D', '', gradename).strip()
+            self.SP.page_loading(self.driver)
+            for i in range(len(dists.options) - 1, len(dists.options)):
+                dists.select_by_index(i)
+                self.SP.page_loading(self.driver)
+                for j in range(len(Blocks.options) - 1, len(Blocks.options)):
+                    Blocks.select_by_index(j)
+                    self.SP.page_loading(self.driver)
+                    for k in range(1, len(clust.options)):
+                        clust.select_by_index(k)
+                        self.SP.page_loading(self.driver)
+                        value = self.driver.find_element_by_id(self.data.cluster_dropdown).get_attribute('value')
+                        values = value[3:]+'_'
+                        self.driver.find_element_by_id(self.data.Downloads).click()
+                        time.sleep(3)
+                        self.filename = self.p.get_download_dir() + '/' + self.fname.patlo_schools()+management+'_' + gradenum + "_schools_of_cluster_" + values.strip() + self.month + '_' + self.year + '_' + \
+                                        self.SP.get_current_date() + '.csv'
+                        print(self.filename)
+                        file = os.path.isfile(self.filename)
+                        if file != True:
+                            print(clust.options[k].text, 'Cluster wise records csv file is not downloaded')
+                            count = count + 1
+                        else:
+                            with open(self.filename) as fin:
+                                csv_reader = csv.reader(fin, delimiter=',')
+                                header = next(csv_reader)
+                                data = list(csv_reader)
+                                row_count = len(data)
+                            os.remove(self.filename)
+                            tablecount = self.driver.find_elements_by_tag_name('tr')
+                            records = int(len(tablecount)) - 2
+                            time.sleep(2)
+                            if row_count != records:
+                                print(dists.options[i].text,Blocks.options[j].text,clust.options[k].text,
+                                      "records count mismatch in downloaded file and table records")
+                                count = count + 1
+
+                        return count
+
+    def grades_files(self, setup):
+        self.p = pwd()
+        self.driver = setup
+        self.data = Locator_Path()
+        self.driver.get(self.baseUrl)
+        self.SP = PAT_LO(self.driver)
+        self.SP.login(self.username, self.password)
+        self.SP.page_loading(self.driver)
+        count = 0
+        management = self.driver.find_element_by_id('name').text
+        management = management[16:].lower().strip()
+        self.fname = file_extention()
         year = Select(self.driver.find_element_by_id('year'))
         month = Select(self.driver.find_element_by_id('month'))
         self.year = (year.first_selected_option.text).strip()
@@ -645,33 +578,33 @@ class PAT_Heat_Chart:
             time.sleep(2)
             grades.select_by_index(i)
             gradename = grades.options[i].text
-            gradenum = re.sub('\D','',gradename).strip()
+            gradenum = re.sub('\D', '', gradename).strip()
             self.SP.page_loading(self.driver)
             if grades.options[i].text in self.driver.page_source:
-                print(grades.options[i].text ,'is displayed in chart ')
+                print(grades.options[i].text, 'is displayed in chart ')
                 self.SP.page_loading(self.driver)
             else:
-                print(grades.options[i].text ,'is not displayed ')
+                print(grades.options[i].text, 'is not displayed ')
                 count = count + 1
             self.driver.find_element_by_id(self.data.Downloads).click()
             time.sleep(3)
-            self.filename = self.p.get_download_dir() + "/" + self.fname.pchart_grades()+management+'_'+gradenum+'_'+'allDistricts_'+self.month+'_'+self.year+'_'+self.SP.get_current_date()+'.csv'
+            self.filename = self.p.get_download_dir() + "/" + self.fname.patlo_grades()+management+'_' + gradenum + '_' + 'allDistricts_' + self.month + '_' + self.year + '_' + self.SP.get_current_date() + '.csv'
             print(self.filename)
             if os.path.isfile(self.filename) != True:
-                print(grades.options[i].text,'csv file is not downloaded ')
+                print(grades.options[i].text, 'csv file is not downloaded ')
                 count = count + 1
             else:
-                print(grades.options[i].text,"csv file is downloaded")
+                print(grades.options[i].text, "csv file is downloaded")
             os.remove(self.filename)
         self.SP.page_loading(self.driver)
         return count
 
     def test_randoms(self, setup):
-        self.driver = setup
         self.p = pwd()
+        self.driver = setup
         self.data = Locator_Path()
         self.driver.get(self.baseUrl)
-        self.SP = PAT_Heat_Chart(self.driver)
+        self.SP = PAT_LO(self.driver)
         self.SP.login(self.username, self.password)
         self.SP.page_loading(self.driver)
         count = 0

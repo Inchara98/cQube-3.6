@@ -71,3 +71,5 @@ class Locator_Path():
     PAT = "pat1"
     PAT_HC = "heatChart"
     year_select = "year"
+
+    PAT_LO = "lotable"
