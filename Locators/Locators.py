@@ -73,3 +73,7 @@ class Locator_Path():
     year_select = "year"
 
     PAT_LO = "lotable"
+
+    Student_Attendance = "sar"
+    students = "students"
+    DateRange = "dateRange"
